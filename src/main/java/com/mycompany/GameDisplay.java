@@ -1,18 +1,51 @@
 package com.mycompany;
 
+import javax.swing.JLabel;
+
 /**
  *
  * @author Zara Tasnim
+ * @studentID 2450607
+ * @author Selena Sirbu
+ * @studentID need to insert student ID
  */
 public class GameDisplay extends javax.swing.JFrame {
     
+    //TO DELETE COMMENT
+    // Displays the board, score and buttons using Swing.
+    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GameDisplay.class.getName());
-
+    private final Game2048 game;
+    
     /**
      * Creates new form GameDisplay
      */
     public GameDisplay() {
         initComponents();
+        
+        game = new Game2048();
+        
+        updateBoard();
+    }
+    
+    private void updateBoard() {
+        JLabel[][] tiles = {
+            {tileRow0Col0, tileRow0Col1, tileRow0Col2, tileRow0Col3},
+            {tileRow1Col0, tileRow1Col1, tileRow1Col2, tileRow1Col3},
+            {tileRow2Col0, tileRow2Col1, tileRow2Col2, tileRow2Col3},
+            {tileRow3Col0, tileRow3Col1, tileRow3Col2, tileRow3Col3}
+        };
+        
+        for (int r = 0; r < 4; r++) {
+            for (int c = 0; c < 4; c++) {
+                int value = game.getCell(r, c);
+                if (value == 0) {
+                    tiles[r][c].setText("");
+                } else {
+                    tiles[r][c].setText("" + value);
+                }
+            }
+        }
     }
 
     /**
@@ -30,22 +63,22 @@ public class GameDisplay extends javax.swing.JFrame {
         highestScore = new javax.swing.JLabel();
         highestScoreCount = new javax.swing.JLabel();
         boardPanel = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
+        tileRow0Col0 = new javax.swing.JLabel();
+        tileRow0Col1 = new javax.swing.JLabel();
+        tileRow0Col2 = new javax.swing.JLabel();
+        tileRow0Col3 = new javax.swing.JLabel();
+        tileRow1Col0 = new javax.swing.JLabel();
+        tileRow1Col1 = new javax.swing.JLabel();
+        tileRow1Col2 = new javax.swing.JLabel();
+        tileRow1Col3 = new javax.swing.JLabel();
+        tileRow2Col0 = new javax.swing.JLabel();
+        tileRow2Col1 = new javax.swing.JLabel();
+        tileRow2Col2 = new javax.swing.JLabel();
+        tileRow2Col3 = new javax.swing.JLabel();
+        tileRow3Col0 = new javax.swing.JLabel();
+        tileRow3Col1 = new javax.swing.JLabel();
+        tileRow3Col2 = new javax.swing.JLabel();
+        tileRow3Col3 = new javax.swing.JLabel();
         controlPanel = new javax.swing.JPanel();
         directionPanel = new javax.swing.JPanel();
         leftButton = new javax.swing.JButton();
@@ -89,117 +122,117 @@ public class GameDisplay extends javax.swing.JFrame {
         boardPanel.setPreferredSize(new java.awt.Dimension(400, 400));
         boardPanel.setLayout(new java.awt.GridLayout(4, 4, 5, 5));
 
-        jLabel5.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel5.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setOpaque(true);
-        boardPanel.add(jLabel5);
+        tileRow0Col0.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow0Col0.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow0Col0.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow0Col0.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow0Col0.setOpaque(true);
+        boardPanel.add(tileRow0Col0);
 
-        jLabel6.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel6.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setOpaque(true);
-        boardPanel.add(jLabel6);
+        tileRow0Col1.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow0Col1.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow0Col1.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow0Col1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow0Col1.setOpaque(true);
+        boardPanel.add(tileRow0Col1);
 
-        jLabel7.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel7.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setOpaque(true);
-        boardPanel.add(jLabel7);
+        tileRow0Col2.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow0Col2.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow0Col2.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow0Col2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow0Col2.setOpaque(true);
+        boardPanel.add(tileRow0Col2);
 
-        jLabel8.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel8.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setOpaque(true);
-        boardPanel.add(jLabel8);
+        tileRow0Col3.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow0Col3.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow0Col3.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow0Col3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow0Col3.setOpaque(true);
+        boardPanel.add(tileRow0Col3);
 
-        jLabel9.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel9.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setOpaque(true);
-        boardPanel.add(jLabel9);
+        tileRow1Col0.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow1Col0.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow1Col0.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow1Col0.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow1Col0.setOpaque(true);
+        boardPanel.add(tileRow1Col0);
 
-        jLabel10.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel10.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setOpaque(true);
-        boardPanel.add(jLabel10);
+        tileRow1Col1.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow1Col1.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow1Col1.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow1Col1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow1Col1.setOpaque(true);
+        boardPanel.add(tileRow1Col1);
 
-        jLabel11.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel11.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel11.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setOpaque(true);
-        boardPanel.add(jLabel11);
+        tileRow1Col2.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow1Col2.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow1Col2.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow1Col2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow1Col2.setOpaque(true);
+        boardPanel.add(tileRow1Col2);
 
-        jLabel12.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel12.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel12.setOpaque(true);
-        boardPanel.add(jLabel12);
+        tileRow1Col3.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow1Col3.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow1Col3.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow1Col3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow1Col3.setOpaque(true);
+        boardPanel.add(tileRow1Col3);
 
-        jLabel13.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel13.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel13.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel13.setOpaque(true);
-        boardPanel.add(jLabel13);
+        tileRow2Col0.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow2Col0.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow2Col0.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow2Col0.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow2Col0.setOpaque(true);
+        boardPanel.add(tileRow2Col0);
 
-        jLabel14.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel14.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setOpaque(true);
-        boardPanel.add(jLabel14);
+        tileRow2Col1.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow2Col1.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow2Col1.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow2Col1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow2Col1.setOpaque(true);
+        boardPanel.add(tileRow2Col1);
 
-        jLabel15.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel15.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel15.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel15.setOpaque(true);
-        boardPanel.add(jLabel15);
+        tileRow2Col2.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow2Col2.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow2Col2.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow2Col2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow2Col2.setOpaque(true);
+        boardPanel.add(tileRow2Col2);
 
-        jLabel16.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel16.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel16.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel16.setOpaque(true);
-        boardPanel.add(jLabel16);
+        tileRow2Col3.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow2Col3.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow2Col3.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow2Col3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow2Col3.setOpaque(true);
+        boardPanel.add(tileRow2Col3);
 
-        jLabel17.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel17.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel17.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel17.setOpaque(true);
-        boardPanel.add(jLabel17);
+        tileRow3Col0.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow3Col0.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow3Col0.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow3Col0.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow3Col0.setOpaque(true);
+        boardPanel.add(tileRow3Col0);
 
-        jLabel18.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel18.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel18.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel18.setOpaque(true);
-        boardPanel.add(jLabel18);
+        tileRow3Col1.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow3Col1.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow3Col1.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow3Col1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow3Col1.setOpaque(true);
+        boardPanel.add(tileRow3Col1);
 
-        jLabel19.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel19.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel19.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel19.setOpaque(true);
-        boardPanel.add(jLabel19);
+        tileRow3Col2.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow3Col2.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow3Col2.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow3Col2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow3Col2.setOpaque(true);
+        boardPanel.add(tileRow3Col2);
 
-        jLabel20.setBackground(new java.awt.Color(205, 193, 180));
-        jLabel20.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
-        jLabel20.setForeground(new java.awt.Color(119, 110, 101));
-        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel20.setOpaque(true);
-        boardPanel.add(jLabel20);
+        tileRow3Col3.setBackground(new java.awt.Color(205, 193, 180));
+        tileRow3Col3.setFont(new java.awt.Font("Arial", 1, 30)); // NOI18N
+        tileRow3Col3.setForeground(new java.awt.Color(119, 110, 101));
+        tileRow3Col3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        tileRow3Col3.setOpaque(true);
+        boardPanel.add(tileRow3Col3);
 
         controlPanel.setBackground(new java.awt.Color(250, 248, 239));
 
@@ -338,27 +371,27 @@ public class GameDisplay extends javax.swing.JFrame {
     private javax.swing.JButton downButton;
     private javax.swing.JLabel highestScore;
     private javax.swing.JLabel highestScoreCount;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JButton leftButton;
     private javax.swing.JButton newGameButton;
     private javax.swing.JButton rightButton;
     private javax.swing.JLabel score;
     private javax.swing.JLabel scoreCount;
+    private javax.swing.JLabel tileRow0Col0;
+    private javax.swing.JLabel tileRow0Col1;
+    private javax.swing.JLabel tileRow0Col2;
+    private javax.swing.JLabel tileRow0Col3;
+    private javax.swing.JLabel tileRow1Col0;
+    private javax.swing.JLabel tileRow1Col1;
+    private javax.swing.JLabel tileRow1Col2;
+    private javax.swing.JLabel tileRow1Col3;
+    private javax.swing.JLabel tileRow2Col0;
+    private javax.swing.JLabel tileRow2Col1;
+    private javax.swing.JLabel tileRow2Col2;
+    private javax.swing.JLabel tileRow2Col3;
+    private javax.swing.JLabel tileRow3Col0;
+    private javax.swing.JLabel tileRow3Col1;
+    private javax.swing.JLabel tileRow3Col2;
+    private javax.swing.JLabel tileRow3Col3;
     private javax.swing.JPanel topPanel;
     private javax.swing.JButton undoButton;
     private javax.swing.JButton upButton;
