@@ -2,6 +2,8 @@ package com.mycompany;
 
 /**
  *
+ * Provides the entry point for the 2048 application.
+ * 
  * @author Zara Tasnim
  * @studentID 2450607
  * @author Selena Sirbu
