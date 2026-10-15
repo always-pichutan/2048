@@ -10,9 +10,18 @@ package com.mycompany;
  */
 public class Game2048 {
     private final int[][] board;
+    private final TileGenerator tileGenerator;
     
     public Game2048() {
         board = new int[4][4];
+        tileGenerator = new TileGenerator();
+        
+        spawnTile();
+        spawnTile();
+    }
+    
+    private void spawnTile() {
+        tileGenerator.generateTile(board);
     }
     
     /**
@@ -26,12 +35,39 @@ public class Game2048 {
         return board[row][column];
     }
     
-    // TODO: Check whether any legal moves remain without changing the board.
+    /**
+     * Checks whether the game has ended.
+     * A game is over when there are no empty cells and no adjacent
+     * tiles with equal values that can merge.
+     * Does not modify the board.
+     * 
+     * @return true if no legal moves remain, false otherwise
+     */
+    public boolean isGameOver() {
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                if (board[row][col] == 0) {
+                    return false;
+                }
+                
+                if (col < 3 && board[row][col] == board[row][col + 1]) {
+                    return false;
+                }
+                
+                if (row < 3 && board[row][col] == board[row + 1][col]) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
     
     /**
      * Moves all tiles to the left, merging adjacent equal non-zero tiles.
      * Slides the tiles before and after merging to remove empty spaces.
      * Each tile can merge only once per move.
+     * Generates one new random tile if the board changes.
      * 
      * @return true if the board changed, false otherwise
      */
@@ -39,12 +75,18 @@ public class Game2048 {
         boolean firstSlideChanged;
         boolean mergeChanged;
         boolean secondSlideChanged;
+        boolean changed;
         
         firstSlideChanged = slideLeft();
         mergeChanged = mergeLeft();
         secondSlideChanged = slideLeft();
+        changed = firstSlideChanged || mergeChanged || secondSlideChanged;
         
-        return firstSlideChanged || mergeChanged || secondSlideChanged;
+        if (changed) {
+            spawnTile();
+        }
+        
+        return changed;
     }
     
     private boolean slideLeft() {
@@ -106,21 +148,28 @@ public class Game2048 {
     
     /**
      * Moves all tiles to the right, merging adjacent equal non-zero tiles.
-     * Slides the tiles before and after merging to remove empty spaces.
-     * Each tile can merge only once per move.
-     * 
+     * Slides the tiles before and after merging to remove empty spaces. Each
+     * tile can merge only once per move. Generates one new random tile if the
+     * board changes.
+     *
      * @return true if the board changed, false otherwise
      */
     public boolean moveRight() {
         boolean firstSlideChanged;
         boolean mergeChanged;
         boolean secondSlideChanged;
+        boolean changed;
 
         firstSlideChanged = slideRight();
         mergeChanged = mergeRight();
         secondSlideChanged = slideRight();
+        changed = firstSlideChanged || mergeChanged || secondSlideChanged;
 
-        return firstSlideChanged || mergeChanged || secondSlideChanged;
+        if (changed) {
+            spawnTile();
+        }
+
+        return changed;
     }
     
     private boolean slideRight() {
@@ -181,22 +230,29 @@ public class Game2048 {
     }
         
     /**
-     * Moves all tiles upwards, merging adjacent equal non-zero tiles.
-     * Slides the tiles before and after merging to remove empty spaces.
-     * Each tile can merge only once per move.
-     * 
+     * Moves all tiles upward, merging adjacent equal non-zero tiles.
+     * Slides the tiles before and after merging to remove empty spaces. Each
+     * tile can merge only once per move. Generates one new random tile if the
+     * board changes.
+     *
      * @return true if the board changed, false otherwise
      */
     public boolean moveUp() {
         boolean firstSlideChanged;
         boolean mergeChanged;
         boolean secondSlideChanged;
+        boolean changed;
 
         firstSlideChanged = slideUp();
         mergeChanged = mergeUp();
         secondSlideChanged = slideUp();
+        changed = firstSlideChanged || mergeChanged || secondSlideChanged;
 
-        return firstSlideChanged || mergeChanged || secondSlideChanged;
+        if (changed) {
+            spawnTile();
+        }
+
+        return changed;
     }
     
     private boolean slideUp() {
@@ -258,21 +314,28 @@ public class Game2048 {
     
     /**
      * Moves all tiles downward, merging adjacent equal non-zero tiles.
-     * Slides the tiles before and after merging to remove empty spaces.
-     * Each tile can merge only once per move.
-     * 
+     * Slides the tiles before and after merging to remove empty spaces. Each
+     * tile can merge only once per move. Generates one new random tile if the
+     * board changes.
+     *
      * @return true if the board changed, false otherwise
      */
     public boolean moveDown() {
         boolean firstSlideChanged;
         boolean mergeChanged;
         boolean secondSlideChanged;
+        boolean changed;
 
         firstSlideChanged = slideDown();
         mergeChanged = mergeDown();
         secondSlideChanged = slideDown();
+        changed = firstSlideChanged || mergeChanged || secondSlideChanged;
 
-        return firstSlideChanged || mergeChanged || secondSlideChanged;
+        if (changed) {
+            spawnTile();
+        }
+
+        return changed;
     }
     
     private boolean slideDown() {

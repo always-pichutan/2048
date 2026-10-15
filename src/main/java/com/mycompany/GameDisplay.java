@@ -9,33 +9,31 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-
 /**
- * Displays the 2048 game using Swing components.
- * Handles directional controls and updates the graphical board.
- * 
+ * Displays the 2048 game using Swing components. Handles directional controls
+ * and updates the graphical board.
+ *
  * @author Zara Tasnim
  * @studentID 2450607
  * @author Selena Sirbu
  * @studentID need to insert student ID
  */
 public class GameDisplay extends javax.swing.JFrame {
-    
+
     //TO DELETE COMMENT
     // Displays the board, score and buttons using Swing.
-    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GameDisplay.class.getName());
-    private final Game2048 game;    
+    private final Game2048 game;
     private final Map<Integer, Color> tileColors = new HashMap<>();
-    
-    
+
     public GameDisplay() {
         initComponents();
-        
+
         game = new Game2048();
-        
+
         tileColors.put(0, new Color(205, 193, 180));
         tileColors.put(2, new Color(238, 228, 218));
         tileColors.put(4, new Color(237, 224, 200));
@@ -48,11 +46,11 @@ public class GameDisplay extends javax.swing.JFrame {
         tileColors.put(512, new Color(237, 200, 80));
         tileColors.put(1024, new Color(237, 197, 63));
         tileColors.put(2048, new Color(237, 194, 46));
-        
+
         updateBoard();
         setupKeyBindings();
     }
-    
+
     private void updateBoard() {
         JLabel[][] tiles = {
             {tileRow0Col0, tileRow0Col1, tileRow0Col2, tileRow0Col3},
@@ -60,7 +58,7 @@ public class GameDisplay extends javax.swing.JFrame {
             {tileRow2Col0, tileRow2Col1, tileRow2Col2, tileRow2Col3},
             {tileRow3Col0, tileRow3Col1, tileRow3Col2, tileRow3Col3}
         };
-        
+
         for (int r = 0; r < 4; r++) {
             for (int c = 0; c < 4; c++) {
                 int value = game.getCell(r, c);
@@ -69,18 +67,17 @@ public class GameDisplay extends javax.swing.JFrame {
                 } else {
                     tiles[r][c].setText("" + value);
                 }
-                
-                               
+
                 colorOrganizer(tiles[r][c], value);
             }
         }
     }
-    
+
     private void colorOrganizer(JLabel specificTile, int value) {
-        
+
         // Set tile background color
         specificTile.setBackground(tileColors.get(value));
-        
+
         // Set tile foreground color
         if ((value == 0) || (value == 2) || (value == 4)) {
             specificTile.setForeground(new Color(119, 110, 101));
@@ -88,7 +85,7 @@ public class GameDisplay extends javax.swing.JFrame {
             specificTile.setForeground(new Color(249, 246, 242));
         }
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -373,15 +370,22 @@ public class GameDisplay extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void checkGameOver() {
+        if (game.isGameOver()) {
+            // Show the custom game-over overlay here later.
+            }
+    }
+    
     private void upButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upButtonActionPerformed
         game.moveUp();
         updateBoard();
+        checkGameOver();
     }//GEN-LAST:event_upButtonActionPerformed
 
     private void setupKeyBindings() {
         InputMap inputMap;
         ActionMap actionMap;
-        
+
         inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         actionMap = getRootPane().getActionMap();
         // Binding the UP key.
@@ -390,7 +394,7 @@ public class GameDisplay extends javax.swing.JFrame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 upButton.doClick();
-            } 
+            }
         });
         // Binding the RIGHT key.
         inputMap.put(KeyStroke.getKeyStroke("RIGHT"), "moveRight");
@@ -417,22 +421,25 @@ public class GameDisplay extends javax.swing.JFrame {
             }
         });
     }
-    
+
     private void rightButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rightButtonActionPerformed
         game.moveRight();
         updateBoard();
+        checkGameOver();
     }//GEN-LAST:event_rightButtonActionPerformed
 
     private void leftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftButtonActionPerformed
         game.moveLeft();
         updateBoard();
+        checkGameOver();
     }//GEN-LAST:event_leftButtonActionPerformed
 
     private void downButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downButtonActionPerformed
         game.moveDown();
         updateBoard();
+        checkGameOver();
     }//GEN-LAST:event_downButtonActionPerformed
-    
+
     /**
      * @param args the command line arguments
      */
