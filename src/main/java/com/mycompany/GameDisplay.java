@@ -13,24 +13,27 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 /**
- * Displays the 2048 game using Swing components. Handles directional controls
- * and updates the graphical board.
+ * Provides the graphical user interface for the 2048 game.
+ * Displays the game board, handles player input through buttons
+ * and arrow keys, and manages the game-over overlay.
  *
  * @author Zara Tasnim
  * @studentID 2450607
  * @author Selena Sirbu
- * @studentID need to insert student ID
+ * @studentID 2472007
  */
 public class GameDisplay extends javax.swing.JFrame {
-
-    //TO DELETE COMMENT
-    // Displays the board, score and buttons using Swing.
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GameDisplay.class.getName());
-    private final Game2048 game;
+    
+    private static final java.util.logging.Logger LOGGER =
+            java.util.logging.Logger.getLogger(GameDisplay.class.getName());
+    private Game2048 game;
     private final Map<Integer, Color> tileColors = new HashMap<>();
 
     public GameDisplay() {
         initComponents();
+        gameOverOverlay.setVisible(false);
+        gameLayeredPane.setLayer(gameOverOverlay, javax.swing.JLayeredPane.MODAL_LAYER);
+        gameOverOverlay.setOpaque(false);
 
         game = new Game2048();
 
@@ -94,12 +97,23 @@ public class GameDisplay extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         topPanel = new javax.swing.JPanel();
         score = new javax.swing.JLabel();
         scoreCount = new javax.swing.JLabel();
         highestScore = new javax.swing.JLabel();
         highestScoreCount = new javax.swing.JLabel();
+        controlPanel = new javax.swing.JPanel();
+        directionPanel = new javax.swing.JPanel();
+        leftButton = new javax.swing.JButton();
+        upButton = new javax.swing.JButton();
+        downButton = new javax.swing.JButton();
+        rightButton = new javax.swing.JButton();
+        actionPanel = new javax.swing.JPanel();
+        newGameButton = new javax.swing.JButton();
+        undoButton = new javax.swing.JButton();
+        gameLayeredPane = new javax.swing.JLayeredPane();
         boardPanel = new javax.swing.JPanel();
         tileRow0Col0 = new RoundedTile();
         tileRow0Col1 = new RoundedTile();
@@ -117,15 +131,10 @@ public class GameDisplay extends javax.swing.JFrame {
         tileRow3Col1 = new RoundedTile();
         tileRow3Col2 = new RoundedTile();
         tileRow3Col3 = new RoundedTile();
-        controlPanel = new javax.swing.JPanel();
-        directionPanel = new javax.swing.JPanel();
-        leftButton = new javax.swing.JButton();
-        upButton = new javax.swing.JButton();
-        downButton = new javax.swing.JButton();
-        rightButton = new javax.swing.JButton();
-        actionPanel = new javax.swing.JPanel();
-        newGameButton = new javax.swing.JButton();
-        undoButton = new javax.swing.JButton();
+        gameOverOverlay = new CloudyPanel();
+        gameOverCard = new javax.swing.JPanel();
+        gameOverLabel = new java.awt.Label();
+        okButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("2048");
@@ -154,6 +163,80 @@ public class GameDisplay extends javax.swing.JFrame {
         highestScoreCount.setForeground(new java.awt.Color(102, 51, 0));
         highestScoreCount.setText("0");
         topPanel.add(highestScoreCount);
+
+        controlPanel.setBackground(new java.awt.Color(250, 248, 239));
+
+        directionPanel.setBackground(new java.awt.Color(250, 248, 239));
+        directionPanel.setForeground(new java.awt.Color(119, 110, 101));
+        directionPanel.setPreferredSize(new java.awt.Dimension(360, 73));
+        directionPanel.setLayout(null);
+
+        leftButton.setBackground(new java.awt.Color(143, 122, 102));
+        leftButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        leftButton.setForeground(new java.awt.Color(255, 255, 255));
+        leftButton.setText("←");
+        leftButton.addActionListener(this::leftButtonActionPerformed);
+        directionPanel.add(leftButton);
+        leftButton.setBounds(100, 40, 80, 27);
+
+        upButton.setBackground(new java.awt.Color(143, 122, 102));
+        upButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        upButton.setForeground(new java.awt.Color(255, 255, 255));
+        upButton.setText("↑");
+        upButton.addActionListener(this::upButtonActionPerformed);
+        directionPanel.add(upButton);
+        upButton.setBounds(180, 10, 80, 27);
+
+        downButton.setBackground(new java.awt.Color(143, 122, 102));
+        downButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        downButton.setForeground(new java.awt.Color(255, 255, 255));
+        downButton.setText("↓");
+        downButton.addActionListener(this::downButtonActionPerformed);
+        directionPanel.add(downButton);
+        downButton.setBounds(180, 40, 80, 27);
+
+        rightButton.setBackground(new java.awt.Color(143, 122, 102));
+        rightButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        rightButton.setForeground(new java.awt.Color(255, 255, 255));
+        rightButton.setText("→");
+        rightButton.addActionListener(this::rightButtonActionPerformed);
+        directionPanel.add(rightButton);
+        rightButton.setBounds(260, 40, 79, 27);
+
+        actionPanel.setBackground(new java.awt.Color(250, 248, 239));
+        actionPanel.setForeground(new java.awt.Color(119, 110, 101));
+
+        newGameButton.setBackground(new java.awt.Color(143, 122, 102));
+        newGameButton.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        newGameButton.setForeground(new java.awt.Color(255, 255, 255));
+        newGameButton.setText("New Game");
+        newGameButton.addActionListener(this::newGameButtonActionPerformed);
+        actionPanel.add(newGameButton);
+
+        undoButton.setBackground(new java.awt.Color(143, 122, 102));
+        undoButton.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        undoButton.setForeground(new java.awt.Color(255, 255, 255));
+        undoButton.setText("Undo");
+        undoButton.addActionListener(this::undoButtonActionPerformed);
+        actionPanel.add(undoButton);
+
+        javax.swing.GroupLayout controlPanelLayout = new javax.swing.GroupLayout(controlPanel);
+        controlPanel.setLayout(controlPanelLayout);
+        controlPanelLayout.setHorizontalGroup(
+            controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(controlPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(actionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addComponent(directionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        controlPanelLayout.setVerticalGroup(
+            controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlPanelLayout.createSequentialGroup()
+                .addComponent(directionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(actionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         boardPanel.setBackground(new java.awt.Color(187, 173, 160));
         boardPanel.setForeground(new java.awt.Color(119, 110, 101));
@@ -272,75 +355,50 @@ public class GameDisplay extends javax.swing.JFrame {
         tileRow3Col3.setOpaque(false);
         boardPanel.add(tileRow3Col3);
 
-        controlPanel.setBackground(new java.awt.Color(250, 248, 239));
+        gameOverOverlay.setLayout(new java.awt.GridBagLayout());
 
-        directionPanel.setBackground(new java.awt.Color(250, 248, 239));
-        directionPanel.setForeground(new java.awt.Color(119, 110, 101));
-        directionPanel.setLayout(null);
+        gameOverCard.setBackground(new java.awt.Color(250, 248, 239));
+        gameOverCard.setPreferredSize(new java.awt.Dimension(260, 120));
+        gameOverCard.setLayout(new java.awt.GridBagLayout());
 
-        leftButton.setBackground(new java.awt.Color(143, 122, 102));
-        leftButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        leftButton.setForeground(new java.awt.Color(255, 255, 255));
-        leftButton.setText("←");
-        leftButton.addActionListener(this::leftButtonActionPerformed);
-        directionPanel.add(leftButton);
-        leftButton.setBounds(60, 40, 80, 27);
+        gameOverLabel.setAlignment(java.awt.Label.CENTER);
+        gameOverLabel.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        gameOverLabel.setForeground(new java.awt.Color(119, 110, 101));
+        gameOverLabel.setText("GAME OVER!");
+        gameOverCard.add(gameOverLabel, new java.awt.GridBagConstraints());
 
-        upButton.setBackground(new java.awt.Color(143, 122, 102));
-        upButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        upButton.setForeground(new java.awt.Color(255, 255, 255));
-        upButton.setText("↑");
-        upButton.addActionListener(this::upButtonActionPerformed);
-        directionPanel.add(upButton);
-        upButton.setBounds(140, 10, 80, 27);
+        okButton.setBackground(new java.awt.Color(143, 122, 102));
+        okButton.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        okButton.setForeground(new java.awt.Color(255, 255, 255));
+        okButton.setText("OK");
+        okButton.addActionListener(this::okButtonActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gameOverCard.add(okButton, gridBagConstraints);
 
-        downButton.setBackground(new java.awt.Color(143, 122, 102));
-        downButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        downButton.setForeground(new java.awt.Color(255, 255, 255));
-        downButton.setText("↓");
-        downButton.addActionListener(this::downButtonActionPerformed);
-        directionPanel.add(downButton);
-        downButton.setBounds(140, 40, 80, 27);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(119, 0, 120, 0);
+        gameOverOverlay.add(gameOverCard, gridBagConstraints);
 
-        rightButton.setBackground(new java.awt.Color(143, 122, 102));
-        rightButton.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        rightButton.setForeground(new java.awt.Color(255, 255, 255));
-        rightButton.setText("→");
-        rightButton.addActionListener(this::rightButtonActionPerformed);
-        directionPanel.add(rightButton);
-        rightButton.setBounds(220, 40, 79, 27);
+        gameLayeredPane.setLayer(boardPanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        gameLayeredPane.setLayer(gameOverOverlay, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
-        actionPanel.setBackground(new java.awt.Color(250, 248, 239));
-        actionPanel.setForeground(new java.awt.Color(119, 110, 101));
-
-        newGameButton.setBackground(new java.awt.Color(143, 122, 102));
-        newGameButton.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        newGameButton.setForeground(new java.awt.Color(255, 255, 255));
-        newGameButton.setText("New Game");
-        actionPanel.add(newGameButton);
-
-        undoButton.setBackground(new java.awt.Color(143, 122, 102));
-        undoButton.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        undoButton.setForeground(new java.awt.Color(255, 255, 255));
-        undoButton.setText("Undo (10)");
-        actionPanel.add(undoButton);
-
-        javax.swing.GroupLayout controlPanelLayout = new javax.swing.GroupLayout(controlPanel);
-        controlPanel.setLayout(controlPanelLayout);
-        controlPanelLayout.setHorizontalGroup(
-            controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(controlPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(actionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addComponent(directionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        javax.swing.GroupLayout gameLayeredPaneLayout = new javax.swing.GroupLayout(gameLayeredPane);
+        gameLayeredPane.setLayout(gameLayeredPaneLayout);
+        gameLayeredPaneLayout.setHorizontalGroup(
+            gameLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(gameLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(gameOverOverlay, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE))
         );
-        controlPanelLayout.setVerticalGroup(
-            controlPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlPanelLayout.createSequentialGroup()
-                .addComponent(directionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(actionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        gameLayeredPaneLayout.setVerticalGroup(
+            gameLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(boardPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
+            .addGroup(gameLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(gameOverOverlay, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -350,9 +408,9 @@ public class GameDisplay extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
+                    .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
                     .addComponent(controlPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(boardPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(gameLayeredPane))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -361,7 +419,7 @@ public class GameDisplay extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(boardPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(gameLayeredPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(controlPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -372,8 +430,9 @@ public class GameDisplay extends javax.swing.JFrame {
 
     private void checkGameOver() {
         if (game.isGameOver()) {
-            // Show the custom game-over overlay here later.
-            }
+            gameOverOverlay.setVisible(true);
+            gameLayeredPane.repaint();
+        }
     }
     
     private void upButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upButtonActionPerformed
@@ -440,6 +499,22 @@ public class GameDisplay extends javax.swing.JFrame {
         checkGameOver();
     }//GEN-LAST:event_downButtonActionPerformed
 
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        gameOverOverlay.setVisible(false);
+    }//GEN-LAST:event_okButtonActionPerformed
+
+    private void newGameButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newGameButtonActionPerformed
+        game = new Game2048();
+        updateBoard();
+        gameOverOverlay.setVisible(false);
+    }//GEN-LAST:event_newGameButtonActionPerformed
+
+    private void undoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoButtonActionPerformed
+        game.undoMove();
+        updateBoard();
+        gameOverOverlay.setVisible(false);
+    }//GEN-LAST:event_undoButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -457,7 +532,7 @@ public class GameDisplay extends javax.swing.JFrame {
                 }
             }
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
+            LOGGER.log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -471,10 +546,15 @@ public class GameDisplay extends javax.swing.JFrame {
     private javax.swing.JPanel controlPanel;
     private javax.swing.JPanel directionPanel;
     private javax.swing.JButton downButton;
+    private javax.swing.JLayeredPane gameLayeredPane;
+    private javax.swing.JPanel gameOverCard;
+    private java.awt.Label gameOverLabel;
+    private javax.swing.JPanel gameOverOverlay;
     private javax.swing.JLabel highestScore;
     private javax.swing.JLabel highestScoreCount;
     private javax.swing.JButton leftButton;
     private javax.swing.JButton newGameButton;
+    private javax.swing.JButton okButton;
     private javax.swing.JButton rightButton;
     private javax.swing.JLabel score;
     private javax.swing.JLabel scoreCount;

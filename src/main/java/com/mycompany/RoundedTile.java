@@ -6,12 +6,13 @@ import java.awt.RenderingHints;
 import javax.swing.JLabel;
 
 /**
- * Represents a 2048 tile with a rounded background.
+ * A custom JLabel that displays a 2048 tile with rounded corners.
+ * Draws an anti-aliased background while preserving the label's text.
  * 
  * @author Zara Tasnim
  * @studentID 2450607
  * @author Selena Sirbu
- * @studentID need to insert student ID
+ * @studentID 2472007
  */
 public class RoundedTile extends JLabel {
     
