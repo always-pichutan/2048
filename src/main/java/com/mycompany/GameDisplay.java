@@ -4,18 +4,18 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 /**
- * Provides the graphical user interface for the 2048 game.
- * Displays the game board, handles player input through buttons
- * and arrow keys, and manages the game-over overlay.
+ * Provides the graphical user interface for the 2048 game. Displays the game
+ * board, handles player input through buttons and arrow keys, updates the
+ * current and highest scores, and manages the game-over and victory overlays.
  *
  * @author Zara Tasnim
  * @studentID 2450607
@@ -24,19 +24,28 @@ import javax.swing.KeyStroke;
  */
 public class GameDisplay extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger LOGGER =
-            java.util.logging.Logger.getLogger(GameDisplay.class.getName());
+    private static final java.util.logging.Logger LOGGER
+            = java.util.logging.Logger.getLogger(GameDisplay.class.getName());
     private Game2048 game;
+    private final Preferences preferences
+            = Preferences.userNodeForPackage(GameDisplay.class);
+    private int highestScoreValue = preferences.getInt("highestScore", 0);
+    private boolean victoryShown = false;
     private final Map<Integer, Color> tileColors = new HashMap<>();
-
+    
     public GameDisplay() {
         initComponents();
         gameOverOverlay.setVisible(false);
-        gameLayeredPane.setLayer(gameOverOverlay, javax.swing.JLayeredPane.MODAL_LAYER);
+        gameLayeredPane.setLayer(
+                gameOverOverlay, javax.swing.JLayeredPane.MODAL_LAYER);
         gameOverOverlay.setOpaque(false);
-
+        victoryOverlay.setVisible(false);
+        gameLayeredPane.setLayer(
+                victoryOverlay, javax.swing.JLayeredPane.MODAL_LAYER);
+        victoryOverlay.setOpaque(false);
+        
         game = new Game2048();
-
+        
         tileColors.put(0, new Color(205, 193, 180));
         tileColors.put(2, new Color(238, 228, 218));
         tileColors.put(4, new Color(237, 224, 200));
@@ -49,11 +58,11 @@ public class GameDisplay extends javax.swing.JFrame {
         tileColors.put(512, new Color(237, 200, 80));
         tileColors.put(1024, new Color(237, 197, 63));
         tileColors.put(2048, new Color(237, 194, 46));
-
+        
         updateBoard();
         setupKeyBindings();
     }
-
+    
     private void updateBoard() {
         JLabel[][] tiles = {
             {tileRow0Col0, tileRow0Col1, tileRow0Col2, tileRow0Col3},
@@ -61,7 +70,7 @@ public class GameDisplay extends javax.swing.JFrame {
             {tileRow2Col0, tileRow2Col1, tileRow2Col2, tileRow2Col3},
             {tileRow3Col0, tileRow3Col1, tileRow3Col2, tileRow3Col3}
         };
-
+        
         for (int r = 0; r < 4; r++) {
             for (int c = 0; c < 4; c++) {
                 int value = game.getCell(r, c);
@@ -70,12 +79,20 @@ public class GameDisplay extends javax.swing.JFrame {
                 } else {
                     tiles[r][c].setText("" + value);
                 }
-
+                
                 colorOrganizer(tiles[r][c], value);
             }
         }
+        
+        if (game.getScore() > highestScoreValue) {
+            highestScoreValue = game.getScore();
+            preferences.putInt("highestScore", highestScoreValue);
+        }
+        
+        scoreCount.setText(String.valueOf(game.getScore()));
+        highestScoreCount.setText(String.valueOf(highestScoreValue));
     }
-
+    
     private void colorOrganizer(JLabel specificTile, int value) {
 
         // Set tile background color
@@ -88,7 +105,7 @@ public class GameDisplay extends javax.swing.JFrame {
             specificTile.setForeground(new Color(249, 246, 242));
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -132,9 +149,21 @@ public class GameDisplay extends javax.swing.JFrame {
         tileRow3Col2 = new RoundedTile();
         tileRow3Col3 = new RoundedTile();
         gameOverOverlay = new CloudyPanel();
-        gameOverCard = new javax.swing.JPanel();
+        gameOverCard = new RoundedPanel();
         gameOverLabel = new java.awt.Label();
         okButton = new javax.swing.JButton();
+        victoryOverlay = new CloudyPanel();
+        victoryCard = new RoundedPanel();
+        victoryTitle = new javax.swing.JLabel();
+        victoryMessage = new javax.swing.JLabel();
+        continueButton = new javax.swing.JButton();
+        victoryScoresPanel = new javax.swing.JPanel();
+        victoryScoreBox = new RoundedPanel();
+        victoryScoreLabel = new javax.swing.JLabel();
+        victoryScoreValue = new javax.swing.JLabel();
+        victoryHighestScoreBox = new RoundedPanel();
+        victoryHighestScoreLabel = new javax.swing.JLabel();
+        victoryHighestScoreValue = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("2048");
@@ -358,6 +387,7 @@ public class GameDisplay extends javax.swing.JFrame {
         gameOverOverlay.setLayout(new java.awt.GridBagLayout());
 
         gameOverCard.setBackground(new java.awt.Color(250, 248, 239));
+        gameOverCard.setOpaque(false);
         gameOverCard.setPreferredSize(new java.awt.Dimension(260, 120));
         gameOverCard.setLayout(new java.awt.GridBagLayout());
 
@@ -383,22 +413,137 @@ public class GameDisplay extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(119, 0, 120, 0);
         gameOverOverlay.add(gameOverCard, gridBagConstraints);
 
+        victoryCard.setBackground(new java.awt.Color(250, 248, 239));
+        victoryCard.setMinimumSize(new java.awt.Dimension(360, 290));
+        victoryCard.setOpaque(false);
+        victoryCard.setPreferredSize(new java.awt.Dimension(360, 290));
+        victoryCard.setLayout(new java.awt.GridBagLayout());
+
+        victoryTitle.setFont(new java.awt.Font("Arial", 1, 28)); // NOI18N
+        victoryTitle.setForeground(new java.awt.Color(119, 110, 101));
+        victoryTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        victoryTitle.setText("YOU WON!");
+        victoryTitle.setPreferredSize(new java.awt.Dimension(300, 40));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        victoryCard.add(victoryTitle, gridBagConstraints);
+
+        victoryMessage.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
+        victoryMessage.setForeground(new java.awt.Color(119, 110, 101));
+        victoryMessage.setText("Congratulations! You reached 2048!");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        victoryCard.add(victoryMessage, gridBagConstraints);
+
+        continueButton.setBackground(new java.awt.Color(143, 122, 102));
+        continueButton.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
+        continueButton.setForeground(new java.awt.Color(255, 255, 255));
+        continueButton.setText("Continue Playing");
+        continueButton.setPreferredSize(new java.awt.Dimension(180, 38));
+        continueButton.addActionListener(this::continueButtonActionPerformed);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.insets = new java.awt.Insets(15, 0, 0, 0);
+        victoryCard.add(continueButton, gridBagConstraints);
+
+        victoryScoresPanel.setBackground(new java.awt.Color(250, 248, 239));
+        victoryScoresPanel.setPreferredSize(new java.awt.Dimension(320, 80));
+        victoryScoresPanel.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
+
+        victoryScoreBox.setBackground(new java.awt.Color(237, 224, 200));
+        victoryScoreBox.setOpaque(false);
+        victoryScoreBox.setPreferredSize(new java.awt.Dimension(155, 80));
+        victoryScoreBox.setLayout(new java.awt.GridLayout(2, 1));
+
+        victoryScoreLabel.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        victoryScoreLabel.setForeground(new java.awt.Color(119, 110, 101));
+        victoryScoreLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        victoryScoreLabel.setText("SCORE");
+        victoryScoreLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        victoryScoreBox.add(victoryScoreLabel);
+
+        victoryScoreValue.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        victoryScoreValue.setForeground(new java.awt.Color(119, 110, 101));
+        victoryScoreValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        victoryScoreValue.setText("0");
+        victoryScoreValue.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        victoryScoreBox.add(victoryScoreValue);
+
+        victoryScoresPanel.add(victoryScoreBox);
+
+        victoryHighestScoreBox.setBackground(new java.awt.Color(237, 224, 200));
+        victoryHighestScoreBox.setToolTipText("");
+        victoryHighestScoreBox.setOpaque(false);
+        victoryHighestScoreBox.setPreferredSize(new java.awt.Dimension(155, 80));
+        victoryHighestScoreBox.setLayout(new java.awt.GridLayout(2, 1));
+
+        victoryHighestScoreLabel.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        victoryHighestScoreLabel.setForeground(new java.awt.Color(119, 110, 101));
+        victoryHighestScoreLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        victoryHighestScoreLabel.setText("HIGHEST SCORE");
+        victoryHighestScoreLabel.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        victoryHighestScoreBox.add(victoryHighestScoreLabel);
+
+        victoryHighestScoreValue.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        victoryHighestScoreValue.setForeground(new java.awt.Color(119, 110, 101));
+        victoryHighestScoreValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        victoryHighestScoreValue.setText("0");
+        victoryHighestScoreValue.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        victoryHighestScoreBox.add(victoryHighestScoreValue);
+
+        victoryScoresPanel.add(victoryHighestScoreBox);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
+        victoryCard.add(victoryScoresPanel, gridBagConstraints);
+
+        javax.swing.GroupLayout victoryOverlayLayout = new javax.swing.GroupLayout(victoryOverlay);
+        victoryOverlay.setLayout(victoryOverlayLayout);
+        victoryOverlayLayout.setHorizontalGroup(
+            victoryOverlayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 427, Short.MAX_VALUE)
+            .addGroup(victoryOverlayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(victoryOverlayLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(victoryCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+        victoryOverlayLayout.setVerticalGroup(
+            victoryOverlayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 438, Short.MAX_VALUE)
+            .addGroup(victoryOverlayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(victoryOverlayLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(victoryCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+        );
+
         gameLayeredPane.setLayer(boardPanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
         gameLayeredPane.setLayer(gameOverOverlay, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        gameLayeredPane.setLayer(victoryOverlay, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout gameLayeredPaneLayout = new javax.swing.GroupLayout(gameLayeredPane);
         gameLayeredPane.setLayout(gameLayeredPaneLayout);
         gameLayeredPaneLayout.setHorizontalGroup(
             gameLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
             .addGroup(gameLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(gameOverOverlay, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE))
+            .addGroup(gameLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(victoryOverlay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         gameLayeredPaneLayout.setVerticalGroup(
             gameLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(boardPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
+            .addComponent(boardPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
             .addGroup(gameLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(gameOverOverlay, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE))
+                .addComponent(gameOverOverlay, javax.swing.GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE))
+            .addGroup(gameLayeredPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(victoryOverlay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -428,23 +573,33 @@ public class GameDisplay extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void checkVictory() {
+        if (game.hasWon() && !victoryShown) {
+            victoryScoreValue.setText(String.valueOf(game.getScore()));
+            victoryHighestScoreValue.setText(String.valueOf(highestScoreValue));
+            victoryOverlay.setVisible(true);
+            victoryShown = true;
+        }
+    }
+    
     private void checkGameOver() {
         if (game.isGameOver()) {
             gameOverOverlay.setVisible(true);
             gameLayeredPane.repaint();
         }
     }
-    
+
     private void upButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upButtonActionPerformed
         game.moveUp();
         updateBoard();
+        checkVictory();
         checkGameOver();
     }//GEN-LAST:event_upButtonActionPerformed
-
+    
     private void setupKeyBindings() {
         InputMap inputMap;
         ActionMap actionMap;
-
+        
         inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         actionMap = getRootPane().getActionMap();
         // Binding the UP key.
@@ -484,18 +639,21 @@ public class GameDisplay extends javax.swing.JFrame {
     private void rightButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rightButtonActionPerformed
         game.moveRight();
         updateBoard();
+        checkVictory();
         checkGameOver();
     }//GEN-LAST:event_rightButtonActionPerformed
 
     private void leftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftButtonActionPerformed
         game.moveLeft();
         updateBoard();
+        checkVictory();
         checkGameOver();
     }//GEN-LAST:event_leftButtonActionPerformed
 
     private void downButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downButtonActionPerformed
         game.moveDown();
         updateBoard();
+        checkVictory();
         checkGameOver();
     }//GEN-LAST:event_downButtonActionPerformed
 
@@ -507,6 +665,8 @@ public class GameDisplay extends javax.swing.JFrame {
         game = new Game2048();
         updateBoard();
         gameOverOverlay.setVisible(false);
+        victoryOverlay.setVisible(false);
+        victoryShown = false;
     }//GEN-LAST:event_newGameButtonActionPerformed
 
     private void undoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoButtonActionPerformed
@@ -514,6 +674,10 @@ public class GameDisplay extends javax.swing.JFrame {
         updateBoard();
         gameOverOverlay.setVisible(false);
     }//GEN-LAST:event_undoButtonActionPerformed
+
+    private void continueButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueButtonActionPerformed
+        victoryOverlay.setVisible(false);
+    }//GEN-LAST:event_continueButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -543,6 +707,7 @@ public class GameDisplay extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actionPanel;
     private javax.swing.JPanel boardPanel;
+    private javax.swing.JButton continueButton;
     private javax.swing.JPanel controlPanel;
     private javax.swing.JPanel directionPanel;
     private javax.swing.JButton downButton;
@@ -577,5 +742,16 @@ public class GameDisplay extends javax.swing.JFrame {
     private javax.swing.JPanel topPanel;
     private javax.swing.JButton undoButton;
     private javax.swing.JButton upButton;
+    private javax.swing.JPanel victoryCard;
+    private javax.swing.JPanel victoryHighestScoreBox;
+    private javax.swing.JLabel victoryHighestScoreLabel;
+    private javax.swing.JLabel victoryHighestScoreValue;
+    private javax.swing.JLabel victoryMessage;
+    private javax.swing.JPanel victoryOverlay;
+    private javax.swing.JPanel victoryScoreBox;
+    private javax.swing.JLabel victoryScoreLabel;
+    private javax.swing.JLabel victoryScoreValue;
+    private javax.swing.JPanel victoryScoresPanel;
+    private javax.swing.JLabel victoryTitle;
     // End of variables declaration//GEN-END:variables
 }

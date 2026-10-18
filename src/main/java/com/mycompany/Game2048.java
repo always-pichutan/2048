@@ -1,58 +1,73 @@
 package com.mycompany;
 
 /**
- * Represents the logic of a 2048 game on a 4-by-4 board.
- * Handles tile movement, merging, tile generation, game-over
- * detection and restoring previous board states.
- * 
+ * Represents the logic of a 2048 game on a 4-by-4 board. Handles tile movement,
+ * merging, tile generation, game-over detection and restoring previous board
+ * states.
+ *
  * @author Zara Tasnim
  * @studentID 2450607
  * @author Selena Sirbu
  * @studentID 2472007
  */
 public class Game2048 {
+
     private final int[][] board;
     private final TileGenerator tileGenerator;
     private final GameHistory history;
-    
+    private int score;
+
     public Game2048() {
         board = new int[4][4];
         tileGenerator = new TileGenerator();
         history = new GameHistory();
-        
+        score = 0;
+
         spawnTile();
         spawnTile();
     }
-    
+
     private void spawnTile() {
         tileGenerator.generateTile(board);
     }
-    
-    private void saveCurrentBoard() {
-        history.savedBoard(board);
-    }
-    
+
     /**
-     * Restores the board to its state before the most recent valid move.
-     * Leaves the board unchanged if no previous state is available.
+     * Returns the current score of the game.
+     *
+     * @return the current score
+     */
+    public int getScore() {
+        return score;
+    }
+
+    private void saveCurrentBoard() {
+        history.savedBoard(board, score);
+    }
+
+    /**
+     * Restores the board and score to their states before the most recent valid
+     * move. Leaves both unchanged if no previous state is available.
      */
     public void undoMove() {
         int[][] previousBoard = history.undo();
-        
+
         if (previousBoard == null) {
             return;
         }
-        
+
+        Integer previousScore = history.undoScore();
+        score = previousScore;
+
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
                 board[row][col] = previousBoard[row][col];
             }
         }
     }
-    
+
     /**
      * Returns the value stored at the specified board position.
-     * 
+     *
      * @param row the row index of the cell
      * @param column the column index of the cell
      * @return the value stored in the cell
@@ -60,7 +75,7 @@ public class Game2048 {
     public int getCell(int row, int column) {
         return board[row][column];
     }
-    
+
     private boolean hasEmptyCell() {
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
@@ -69,14 +84,14 @@ public class Game2048 {
                 }
             }
         }
-        
+
         return false;
     }
-    
+
     private boolean canMergeRight(int row, int col) {
         return col < 3 && board[row][col] == board[row][col + 1];
     }
-    
+
     private boolean hasHorizontalMerge() {
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
@@ -87,11 +102,11 @@ public class Game2048 {
         }
         return false;
     }
-    
+
     private boolean canMergeDown(int row, int col) {
         return row < 3 && board[row][col] == board[row + 1][col];
     }
-    
+
     private boolean hasVerticalMerge() {
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 4; col++) {
@@ -102,13 +117,29 @@ public class Game2048 {
         }
         return false;
     }
-    
+
     /**
-     * Checks whether the game has ended.
-     * A game is over when there are no empty cells and no adjacent
-     * tiles with equal values that can merge.
-     * Does not modify the board.
-     * 
+     * Checks whether the board contains a 2048 tile.
+     *
+     * @return true if a 2048 tile exists false otherwise
+     */
+    public boolean hasWon() {
+        for (int row = 0; row < 4; row++) {
+            for (int col = 0; col < 4; col++) {
+                if (board[row][col] == 2048) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks whether the game has ended. A game is over when there are no empty
+     * cells and no adjacent tiles with equal values that can merge. Does not
+     * modify the board.
+     *
      * @return true if no legal moves remain, false otherwise
      */
     public boolean isGameOver() {
@@ -126,11 +157,11 @@ public class Game2048 {
 
         return true;
     }
-    
+
     /**
      * Moves all tiles to the left, merging adjacent equal tiles once per move.
-     * Generates a new tile only of the board changes.
-     * 
+     * Generates a new tile only if the board changes.
+     *
      * @return true if the board changed, false otherwise
      */
     public boolean moveLeft() {
@@ -138,67 +169,68 @@ public class Game2048 {
         boolean mergeChanged;
         boolean secondSlideChanged;
         boolean changed;
-        
+
         saveCurrentBoard();
         firstSlideChanged = slideLeft();
         mergeChanged = mergeLeft();
         secondSlideChanged = slideLeft();
         changed = firstSlideChanged || mergeChanged || secondSlideChanged;
-        
+
         if (changed) {
             spawnTile();
         } else {
             history.discardLastSave();
         }
-        
+
         return changed;
     }
-    
+
     private boolean slideLeft() {
         boolean changed;
-        
+
         changed = false;
-                
+
         for (int row = 0; row < 4; row++) {
             // Tracks the next column where a non-zero tile should be placed.
             int writeIndex;
-            
+
             writeIndex = 0;
-            
+
             // Scans each column to find non-zero tiles that need to be moved.
             for (int readIndex = 0; readIndex < 4; readIndex++) {
                 if (board[row][readIndex] != 0) {
                     board[row][writeIndex] = board[row][readIndex];
-                    
+
                     if (readIndex != writeIndex) {
                         changed = true;
                     }
-                    
+
                     writeIndex++;
                 }
             }
             clearRemainingRightCells(row, writeIndex);
         }
-    
+
         return changed;
     }
-    
+
     private void clearRemainingRightCells(int row, int writeIndex) {
         for (int i = writeIndex; i < 4; i++) {
             board[row][i] = 0;
         }
     }
-    
+
     private boolean mergeLeft() {
         boolean changed;
-        
+
         changed = false;
-        
+
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 3;) {
                 if ((board[row][col] == board[row][col + 1])
                         && (board[row][col] != 0)) {
                     board[row][col] += board[row][col + 1];
+                    score += board[row][col];
                     board[row][col + 1] = 0;
                     changed = true;
                     col = col + 2;
@@ -207,14 +239,14 @@ public class Game2048 {
                 }
             }
         }
-        
+
         return changed;
     }
-    
+
     /**
      * Moves all tiles to the right, merging adjacent equal tiles once per move.
-     * Generates a new tile only of the board changes.
-     * 
+     * Generates a new tile only if the board changes.
+     *
      * @return true if the board changed, false otherwise
      */
     public boolean moveRight() {
@@ -237,52 +269,53 @@ public class Game2048 {
 
         return changed;
     }
-    
+
     private boolean slideRight() {
         boolean changed;
-        
+
         changed = false;
-                
+
         for (int row = 0; row < 4; row++) {
             // Tracks the next column where a non-zero tile should be placed.
             int writeIndex;
-            
+
             writeIndex = 3;
-            
+
             // Scans each column to find non-zero tiles that need to be moved.
             for (int readIndex = 3; readIndex >= 0; readIndex--) {
                 if (board[row][readIndex] != 0) {
                     board[row][writeIndex] = board[row][readIndex];
-                    
+
                     if (readIndex != writeIndex) {
                         changed = true;
                     }
-                    
+
                     writeIndex--;
                 }
             }
             clearRemainingLeftCells(row, writeIndex);
-        }        
-    
+        }
+
         return changed;
     }
-    
+
     private void clearRemainingLeftCells(int row, int writeIndex) {
         for (int i = writeIndex; i >= 0; i--) {
             board[row][i] = 0;
         }
     }
-    
+
     private boolean mergeRight() {
         boolean changed;
-        
+
         changed = false;
-        
+
         for (int row = 0; row < 4; row++) {
             for (int col = 3; col >= 1;) {
                 if ((board[row][col] == board[row][col - 1])
                         && (board[row][col] != 0)) {
                     board[row][col] += board[row][col - 1];
+                    score += board[row][col];
                     board[row][col - 1] = 0;
                     changed = true;
                     col = col - 2;
@@ -291,14 +324,14 @@ public class Game2048 {
                 }
             }
         }
-        
+
         return changed;
     }
-        
+
     /**
      * Moves all tiles upward, merging adjacent equal tiles once per move.
      * Generates a new tile only if the board changes.
-     * 
+     *
      * @return true if the board changed, false otherwise
      */
     public boolean moveUp() {
@@ -321,7 +354,7 @@ public class Game2048 {
 
         return changed;
     }
-    
+
     private boolean slideUp() {
         boolean changed;
 
@@ -350,13 +383,13 @@ public class Game2048 {
 
         return changed;
     }
-    
+
     private void clearRemainingDownCells(int col, int writeIndex) {
         for (int i = writeIndex; i < 4; i++) {
             board[i][col] = 0;
         }
     }
-    
+
     private boolean mergeUp() {
         boolean changed;
 
@@ -367,6 +400,7 @@ public class Game2048 {
                 if ((board[row][col] == board[row + 1][col])
                         && (board[row][col] != 0)) {
                     board[row][col] += board[row + 1][col];
+                    score += board[row][col];
                     board[row + 1][col] = 0;
                     changed = true;
                     row = row + 2;
@@ -378,11 +412,11 @@ public class Game2048 {
 
         return changed;
     }
-    
+
     /**
      * Moves all tiles downward, merging adjacent equal tiles once per move.
      * Generates a new tile only if the board changes.
-     * 
+     *
      * @return true if the board changed, false otherwise
      */
     public boolean moveDown() {
@@ -405,7 +439,7 @@ public class Game2048 {
 
         return changed;
     }
-    
+
     private boolean slideDown() {
         boolean changed;
 
@@ -434,13 +468,13 @@ public class Game2048 {
 
         return changed;
     }
-    
+
     private void clearRemainingUpCells(int col, int writeIndex) {
         for (int i = writeIndex; i >= 0; i--) {
             board[i][col] = 0;
         }
     }
-    
+
     private boolean mergeDown() {
         boolean changed;
 
@@ -451,6 +485,7 @@ public class Game2048 {
                 if ((board[row][col] == board[row - 1][col])
                         && (board[row][col] != 0)) {
                     board[row][col] += board[row - 1][col];
+                    score += board[row][col];
                     board[row - 1][col] = 0;
                     changed = true;
                     row = row - 2;
