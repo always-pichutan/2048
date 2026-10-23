@@ -31,15 +31,16 @@ The recommended method is to use Apache NetBeans IDE.
 
 ### Option A: Using Apache NetBeans (Recommended)
 
+
 #### Step 1: Install Java Development Kit (JDK) 26
 
 1. Visit the [Oracle Java Downloads](https://www.oracle.com/java/technologies/downloads/) website.
 2. Locate **JDK 26**.
 3. Download the appropriate installer or package for your operating
    system (Windows, macOS, or Linux).
-4. Follow the installation instructions for your operating system.
+4. Install JDK 26 using the instructions for your operating system.
 5. Open Command Prompt (Windows) or Terminal (macOS/Linux).
-6. Verify the Java installation by entering:
+6. Verify the installation:
 
    ```bash
    java --version
@@ -47,6 +48,77 @@ The recommended method is to use Apache NetBeans IDE.
    ```
 
 7. Both commands should display Java version 26.
+
+**If an older Java version is displayed:**
+
+**Windows:**
+
+1. Open the Windows Start menu and search for
+   **Edit the system environment variables**.
+2. Click **Environment Variables**.
+3. Under **User variables**, create or edit `JAVA_HOME`.
+4. Set its value to the JDK 26 installation directory
+   (for example, `C:\Program Files\Java\jdk-26`).
+5. Edit the `Path` variable and add `%JAVA_HOME%\bin`.
+6. Move `%JAVA_HOME%\bin` above entries pointing to older Java versions.
+7. Close and reopen Command Prompt.
+8. Run `java --version` and `javac --version` again.
+
+**macOS:**
+
+1. Install JDK 26.
+2. Open Terminal.
+3. For the default Zsh shell, open your configuration file:
+
+   ```bash
+   nano ~/.zshrc
+   ```
+
+4. Add these lines:
+
+   ```bash
+   export JAVA_HOME=$(/usr/libexec/java_home -v 26)
+   export PATH="$JAVA_HOME/bin:$PATH"
+   ```
+
+5. Save the file and reload the configuration:
+
+   ```bash
+   source ~/.zshrc
+   ```
+
+6. Verify using `java --version` and `javac --version`.
+
+**Linux:**
+
+1. Install JDK 26 using the package or archive appropriate
+   for your Linux distribution.
+2. Locate the JDK 26 installation directory.
+3. Open Terminal and edit your shell configuration file.
+   For Bash, use:
+
+   ```bash
+   nano ~/.bashrc
+   ```
+
+4. Add the following lines, replacing the example path with
+   your actual JDK 26 installation directory:
+
+   ```bash
+   export JAVA_HOME="/path/to/jdk-26"
+   export PATH="$JAVA_HOME/bin:$PATH"
+   ```
+
+5. Save the file and reload the configuration:
+
+   ```bash
+   source ~/.bashrc
+   ```
+
+6. Verify using `java --version` and `javac --version`.
+
+**Note:** If multiple JDK versions are installed, ensure that
+the selected Java installation is JDK 26 before building the project.
 
 #### Step 2: Install Apache NetBeans IDE
 
@@ -96,12 +168,6 @@ Install JDK 26 using the instructions provided in Option A.
    ```bash
    mvn --version
    ```
-
-**Important:** Ensure that Maven uses JDK 26 before building the project.
-Run `mvn --version` and check that the displayed Java version is 26.
-If another version is displayed, configure `JAVA_HOME` to point to
-your JDK 26 installation and update your system's `PATH` accordingly.
-
 
 #### Step 3: Build the Project
 
