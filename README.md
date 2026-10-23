@@ -24,58 +24,117 @@ require additional third-party libraries.
 
 ## Installation and Setup
 
-1. **Install Java Development Kit (JDK) 26**
-    - Download and install JDK 26 for your operating system.
-    - Verify the installation using `java --version` and `javac --version` in a
-terminal.
-    - Configure the `JAVA_HOME` environment variable to point to the JDK 26
-installation directory.
+The 2048 application is developed using Java Swing and Maven and is
+intended to run on Windows, macOS, and Linux.
 
-2. **Install Apache Maven**
-    - Install Apache Maven if you plan to build and run the project from the
-command line.
-    - Verify the installation using `mvn --version`.
-    - A separate Maven installation is not required when using Apache NetBeans
-IDE 31, as Maven is bundled with the IDE.
+The recommended method is to use Apache NetBeans IDE.
 
-3. **Install Apache NetBeans IDE 31 (optional)**
-    - Install Apache NetBeans IDE 31 if you prefer to build and run the project
-through an IDE.
-    - Ensure that NetBeans is configured to use JDK 26.
+### Option A: Using Apache NetBeans (Recommended)
 
-4. **Set Up the 2048 Project**
-    - Download and extract the submitted ZIP file.
-    - Locate the extracted project folder containing the `pom.xml` file.
-    - If using NetBeans, select **File > Open Project** and open the extracted
-project folder.
-    - If using the command line, open a terminal in the extracted project folder.
+#### Step 1: Install Java Development Kit (JDK) 26
 
-No additional application-specific configuration is required.
+1. Visit the [Oracle Java Downloads](https://www.oracle.com/java/technologies/downloads/) website.
+2. Locate **JDK 26**.
+3. Download the appropriate installer or package for your operating
+   system (Windows, macOS, or Linux).
+4. Follow the installation instructions for your operating system.
+5. Open Command Prompt (Windows) or Terminal (macOS/Linux).
+6. Verify the Java installation by entering:
 
-## How to Run
+   ```bash
+   java --version
+   javac --version
+   ```
 
-### Option 1: Using Apache NetBeans
+7. Both commands should display Java version 26.
 
-1. Open the `2048` project in Apache NetBeans.
-2. Right-click the project in the Projects window.
-3. Select **Clean and Build** and wait for `BUILD SUCCESS`.
-4. Right-click the project again and select **Run** (or press `F6`).
-5. The 2048 game window will open.
+#### Step 2: Install Apache NetBeans IDE
 
-### Option 2: Using Apache Maven
+1. Visit the [Apache NetBeans website](https://netbeans.apache.org/).
+2. Download **Apache NetBeans IDE 31**.
+3. Install or extract NetBeans following the instructions for your
+   operating system.
+4. Launch Apache NetBeans.
+5. Ensure that NetBeans is configured to use JDK 26.
 
-1. Open a terminal in the extracted project folder containing `pom.xml`.
-2. Ensure that JDK 26 and Apache Maven are installed and configured.
-3. Build the project using:
-    ```bash
-    mvn clean package
-    ```
-4. Wait for `BUILD SUCCESS`.
-5. Launch the game using:
-    ```bash
-    mvn exec:java -Dexec.mainClass=com.mycompany.App
-    ```
-6. The 2048 game window will open.
+**Note:** Apache NetBeans includes Maven, so a separate Maven
+installation is not required when using this method.
+
+#### Step 3: Open the 2048 Project
+
+1. Download the submitted `2048.zip` file.
+2. Extract the ZIP file to a folder on your computer.
+3. Launch Apache NetBeans.
+4. Select **File > Open Project**.
+5. Navigate to the extracted project folder containing `pom.xml`.
+6. Select the project folder and click **Open Project**.
+
+#### Step 4: Build and Run the Application
+
+1. Locate the `2048` project in the NetBeans Projects window.
+2. Right-click the project and select **Clean and Build**.
+3. Wait until the Output window displays `BUILD SUCCESS`.
+4. Right-click the project again and select **Run**.
+5. The 2048 game window should open and be ready to play.
+
+### Option B: Using Apache Maven (Without NetBeans)
+
+#### Step 1: Install JDK 26
+
+Install JDK 26 using the instructions provided in Option A.
+
+#### Step 2: Install Apache Maven
+
+1. Visit the [Apache Maven download page](https://maven.apache.org/download.cgi).
+2. Download Apache Maven for your operating system.
+3. Follow the [official Maven installation instructions](https://maven.apache.org/install.html).
+4. Configure the `JAVA_HOME` environment variable to point to JDK 26.
+5. Ensure that Maven's `bin` directory is included in your system's
+   `PATH` environment variable.
+6. Open Command Prompt or Terminal and verify the installation:
+
+   ```bash
+   mvn --version
+   ```
+
+**Important:** Ensure that Maven uses JDK 26 before building the project.
+Run `mvn --version` and check that the displayed Java version is 26.
+If another version is displayed, configure `JAVA_HOME` to point to
+your JDK 26 installation and update your system's `PATH` accordingly.
+
+
+#### Step 3: Build the Project
+
+1. Extract the submitted `2048.zip` file.
+2. Open Command Prompt or Terminal.
+3. Navigate to the extracted project folder containing `pom.xml`.
+4. Execute the following command:
+
+   ```bash
+   mvn clean package
+   ```
+
+5. Wait until Maven displays `BUILD SUCCESS`.
+
+#### Step 4: Run the Application
+
+From the same project directory, execute:
+
+```bash
+mvn exec:java -Dexec.mainClass=com.mycompany.App
+```
+
+The 2048 game window should open.
+
+### Platform Compatibility
+
+The application uses Java Swing and standard Java libraries and is
+designed to support Windows, macOS, and Linux.
+
+### Additional Notes
+
+- No third-party Java libraries are required.
+- The application does not require an internet connection during gameplay.
 
 ## How to Play
 
@@ -146,8 +205,8 @@ board states and scores.
 
 ## Authors
 
-
 Developed by:
+
 - Zara Tasnim (Student number: 2450607)
 - Selena Sirbu (Student number: 2472007)
 
